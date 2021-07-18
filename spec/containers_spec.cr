@@ -1,15 +1,13 @@
 require "./spec_helper"
 
-client = Docr::Client.new
-api = Docr::API.new(client)
+api = Docr::API.new
 
 api.images.create("nginx", "latest")
 
 describe "Containers" do
   it "should create a new container" do
     config = Docr::Types::CreateContainerConfig.new(
-      image: "nginx:latest",
-      host_config: Docr::Types::HostConfig.new,
+      image: "nginx:latest"
     )
 
     _ = api.containers.create("abc", config)

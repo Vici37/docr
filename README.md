@@ -4,7 +4,9 @@
 
 Docker client for Crystal. 
 
- ## Description
+Full API description can be found [here](https://docs.docker.com/engine/api/v1.41/)
+
+## Description
 
 Remaining issues:
 
@@ -30,6 +32,53 @@ PRs are always welcomed!
 
 ```crystal
 require "docr"
+
+# Interacting with docker engine can be done through the docker engine API client, or a
+# (considerably less feature rich for now) commands interface that models more closely
+# the docker cli.
+
+# API example
+api = Docr::API.new
+
+# downloads the image, second argument can be used to specify tag
+api.images.create("alpine")
+
+config = Docr::Types::CreateContainerConfig.new(
+  image: "alpine:latest",
+  env: ["ENVVAR=one"],
+  host_config: Docr::Types::HostConfig.new(
+    auto_remove: true
+  )
+)
+
+api.containers.create("my-alpine-container", config)
+api.containers.start("my-alpine-container")
+
+# stop the container
+api.containers.stop("my-alpine-container")
+
+# delete the container (if auto_remove isn't true)
+api.containers.delete("my-alpine-container")
+
+# Command example
+# All commands follow the builder pattern, with each intermediate call just adding configurations,
+# and the `execute` method "building" and running the actual call.
+Docr.commands.run
+  .image("alpine:latest")
+  .env("ENVVAR", "one")
+  .name("my-alpine-container")
+  .rm # or .auto_remove
+  .execute
+
+# stop the container
+Docr.commands.stop
+  .name("my-alpine-container")
+  .execute
+
+# delete the container (if auto_remove isn't true)
+Docr.commands.rm
+  .name("my-alpine-container")
+  .execute
 ```
 
 ## Supported API calls

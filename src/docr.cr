@@ -3,6 +3,7 @@ require "http/client"
 
 require "./types/error_response"
 require "./endpoints/*"
+require "./builder/*"
 
 module Docr
   VERSION = "0.1.0"
@@ -45,7 +46,7 @@ module Docr
     getter sys : Docr::Endpoints::System
     getter exec : Docr::Endpoints::Exec
 
-    def initialize(@client)
+    def initialize(@client = Client.new)
       @images = Docr::Endpoints::Images.new(client)
       @containers = Docr::Endpoints::Containers.new(client)
       @networks = Docr::Endpoints::Networks.new(client)
