@@ -4,7 +4,7 @@ module Docr
     end
 
     def execute
-      summaries = @api.containers.list
+      @api.containers.list
     end
   end
 end

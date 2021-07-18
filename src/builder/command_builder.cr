@@ -20,7 +20,6 @@ module Docr
     CommandBuilder.new(API.new)
   end
 
-  #
   class CommandBuilder
     def initialize(@api : API)
     end
