@@ -1,6 +1,8 @@
 require "../types/**"
 require "./run_builder"
 require "./stop_builder"
+require "./logs_builder"
+require "./rm_builder"
 
 module Docr
   # Helper method to start a command. This is to help _somewhat_ mimic the docker cli command and hide
@@ -33,6 +35,14 @@ module Docr
 
     def stop
       StopCommandBuilder.new(@api)
+    end
+
+    def logs
+      LogsCommandBuilder.new(@api)
+    end
+
+    def rm
+      RmCommandBuilder.new(@api)
     end
   end
 end

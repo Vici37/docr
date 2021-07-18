@@ -1,7 +1,7 @@
 require "./spec_helper"
 require "uuid"
 
-describe Docr::CommandBuilder, focus: true do
+describe Docr::CommandBuilder do
   it "starts, lists, and stops containers" do
     original_containers = Docr.command.ps.execute
 
@@ -26,5 +26,25 @@ describe Docr::CommandBuilder, focus: true do
 
     containers = Docr.command.ps.execute
     containers.size.should eq original_containers.size
+  end
+
+  it "supports env vars and custom commands" do
+    name = UUID.random.to_s
+
+    Docr.command.run
+      .image("alpine:latest")
+      .name(name)
+      .cmds(["/bin/sh", "-c", "echo $TEST"])
+      .env("TEST", "this is a test")
+      .execute
+
+    logsio = Docr.command.logs
+      .name(name)
+      .execute
+
+    logs = logsio.gets_to_end
+    logs[8..-1].strip.should eq "this is a test"
+
+    Docr.command.rm.name(name).execute
   end
 end

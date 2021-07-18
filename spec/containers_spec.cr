@@ -7,8 +7,7 @@ api.images.create("nginx", "latest")
 describe "Containers" do
   it "should create a new container" do
     config = Docr::Types::CreateContainerConfig.new(
-      image: "nginx:latest",
-      host_config: Docr::Types::HostConfig.new,
+      image: "nginx:latest"
     )
 
     _ = api.containers.create("abc", config)
@@ -48,20 +47,5 @@ describe "Containers" do
     )
 
     result.empty?.should be_true
-  end
-
-  it "create and run the container" do
-    api.containers.run(
-      name: "abc_running",
-      image: "nginx:latest",
-      auto_remove: true)
-
-    api.containers.list(limit: 1, filters: {"name" => ["abc_running"]}).size.should eq 1
-
-    api.containers.stop("abc_running")
-    # Need to wait long enough for the pod to be deleted (auto_removed)
-    sleep(1)
-
-    api.containers.list(limit: 1, filters: {"name" => ["abc_running"]}).size.should eq 0
   end
 end
